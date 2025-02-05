@@ -4,10 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Løftekalkulator - Fiberstropper</title>
-  <!-- Google Fonts for et rent uttrykk -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
   <style>
-    /* Generelle stiler */
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -23,10 +21,9 @@
     }
     h1 {
       text-align: center;
-      margin-bottom: 20px;
       font-size: 28px;
+      margin-bottom: 20px;
     }
-    /* Flex-container for kalkulator og bilde-tabell */
     .calc-wrapper {
       display: flex;
       flex-wrap: wrap;
@@ -37,11 +34,9 @@
       background-color: #fff;
       border: 1px solid #ccc;
       border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       padding: 20px;
-      width: 100%;
       max-width: 450px;
-      margin-bottom: 20px;
+      width: 100%;
     }
     label {
       display: block;
@@ -55,7 +50,6 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 16px;
-      background-color: #fafafa;
     }
     button {
       width: 100%;
@@ -67,7 +61,6 @@
       font-size: 18px;
       cursor: pointer;
       margin-top: 20px;
-      transition: background-color 0.3s;
     }
     button:hover { background-color: #0056b3; }
     .result {
@@ -79,7 +72,6 @@
       padding: 10px;
       border-radius: 4px;
     }
-    /* Tabellen for bildene – etterligner Certex sin løftetabell */
     .image-table {
       width: 100%;
       border-collapse: collapse;
@@ -99,7 +91,6 @@
       max-width: 100%;
       height: auto;
     }
-    /* Fargeboks for dimensjon */
     .color-box {
       display: inline-block;
       width: 20px;
@@ -117,7 +108,6 @@
   <div class="container">
     <h1>Løftekalkulator - Fiberstropper</h1>
     <div class="calc-wrapper">
-      <!-- Kalkulatoren -->
       <div class="calculator">
         <label for="dimension">Velg Dimensjon:
           <span id="dimensionColor" class="color-box"></span>
@@ -146,7 +136,7 @@
         <select id="parts" onchange="updateStrapImage()">
           <option value="1">En stropp</option>
           <option value="2">To stropper</option>
-          <option value="3">Tre stropper</option>
+          <option value="3">Tre eller fire stropper</option>
         </select>
 
         <label for="angle">Velg Arbeidsvinkel:</label>
@@ -163,19 +153,18 @@
         </div>
       </div>
 
-      <!-- Tabell for bildene – ligner løftetabellen på Certex -->
       <div class="sketches">
         <table class="image-table">
           <tr>
             <th>Innfestingsmåte</th>
             <td>
-              <img id="attachmentSketch" src="rett.png" alt="Innfestingsmåte" onerror="this.src='error.png'">
+              <img id="attachmentSketch" src="rett.png" alt="Innfestingsmåte">
             </td>
           </tr>
           <tr>
             <th>Antall stropper</th>
             <td>
-              <img id="strapSketch" src="rett.png" alt="Antall stropper" onerror="this.src='error.png'">
+              <img id="strapSketch" src="rett.png" alt="Antall stropper">
             </td>
           </tr>
         </table>
@@ -184,102 +173,25 @@
   </div>
 
   <script>
-    // Oppdater dimensjonsfargen
-    function updateDimensionColor() {
-      const dimensionSelect = document.getElementById('dimension');
-      const colorBox = document.getElementById('dimensionColor');
-      const selectedOption = dimensionSelect.options[dimensionSelect.selectedIndex];
-      const color = selectedOption.getAttribute('data-color') || '#ccc';
-      if (colorBox) {
-        colorBox.style.backgroundColor = color;
-      }
-    }
-    document.getElementById('dimension').addEventListener('change', updateDimensionColor);
-    updateDimensionColor();
-
-    // Mapping for innfestingsmåte (bruk bildene fra Certex-tabellen som referanse)
-    const attachmentImages = {
-      "Rett": "rett.png",
-      "Snaret": "snaret.png",
-      "U/Dobbel": "uform2.png",
-      "U: 0°-45°": "uformvinkel.png",
-      "U: 45°-60°": "uformvinkel.png"
-    };
-
-    // Mapping for antall stropper med arbeidsvinkel
-    // For én stropp brukes samme bilde som innfestingsmåte.
-    // For to stropper:
-    //   0°  (angle 1.0) → tostropper_0.png
-    //   1°–30° (angle 0.8) → tostropper_45.png
-    //   31°–45° (angle 0.7) → tostropper_452.png
-    //   46°–60° (angle 0.5) → tostropper_60.png
-    // For tre stropper:
-    //   0° → trestropper_0.png
-    //   1°–30° → trestropper_45.png
-    //   31°–45° → trestropper_452.png
-    //   46°–60° → trestropper_60.png
-    const strapImages = {
-      "1": "rett.png",
-      "2": {
-        "1.0": "tostropper_0.png",
-        "0.8": "tostropper_45.png",
-        "0.7": "tostropper_452.png",
-        "0.5": "tostropper_60.png"
-      },
-      "3": {
-        "1.0": "trestropper_0.png",
-        "0.8": "trestropper_45.png",
-        "0.7": "trestropper_452.png",
-        "0.5": "trestropper_60.png"
-      }
-    };
-
-    // Oppdater bildet for innfestingsmåte
     function updateAttachmentImage() {
-      const attVal = document.getElementById('attachment').value;
-      document.getElementById('attachmentSketch').src = attachmentImages[attVal] || attachmentImages["Rett"];
+      const images = {
+        "Rett": "rett.png",
+        "Snaret": "snaret.png",
+        "U/Dobbel": "uform2.png",
+        "U: 0°-45°": "uformvinkel.png",
+        "U: 45°-60°": "uformvinkel.png"
+      };
+      document.getElementById('attachmentSketch').src = images[document.getElementById('attachment').value];
     }
 
-    // Oppdater bildet for antall stropper
     function updateStrapImage() {
       const parts = document.getElementById('parts').value;
       const angle = document.getElementById('angle').value;
-      let imgSrc = "";
-      if (parts === "1") {
-        imgSrc = attachmentImages[document.getElementById('attachment').value] || "rett.png";
-      } else if (parts === "2") {
-        imgSrc = strapImages["2"][angle] || "tostropper_0.png";
-      } else if (parts === "3") {
-        imgSrc = strapImages["3"][angle] || "trestropper_0.png";
-      }
-      document.getElementById('strapSketch').src = imgSrc;
-    }
-
-    // Kalkuler funksjonen – beregner og oppdaterer bilder
-    function calculate() {
-      const dimension = parseFloat(document.getElementById('dimension').value);
-      const attachment = document.getElementById('attachment').value;
-      const parts = document.getElementById('parts').value;
-      const angleFactor = parseFloat(document.getElementById('angle').value);
-      let baseLoad = dimension;
-      if (attachment === "Snaret") {
-        baseLoad *= 0.8;
-      } else if (attachment === "U/Dobbel") {
-        baseLoad *= 2.0;
-      } else if (attachment === "U: 0°-45°") {
-        baseLoad *= 1.7;
-      } else if (attachment === "U: 45°-60°") {
-        baseLoad *= 1.4;
-      }
-      if (parts === "2") {
-        baseLoad *= 2.1;
-      } else if (parts === "3") {
-        baseLoad *= 3.0;
-      }
-      const maxLoad = baseLoad * angleFactor;
-      document.getElementById('maxLoad').innerText = maxLoad.toFixed(2);
-      updateAttachmentImage();
-      updateStrapImage();
+      const images = {
+        "2": { "1.0": "tostropper_0.png", "0.8": "tostropper_45.png", "0.7": "tostropper_452.png", "0.5": "tostropper_60.png" },
+        "3": { "1.0": "trestropper_0.png", "0.8": "trestropper_45.png", "0.7": "trestropper_452.png", "0.5": "trestropper_60.png" }
+      };
+      document.getElementById('strapSketch').src = images[parts][angle] || "rett.png";
     }
   </script>
 </body>
