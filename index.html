@@ -6,7 +6,9 @@
   <title>Løftekalkulator - Fiberstropper</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
     body {
       margin: 0;
       padding: 0;
@@ -21,8 +23,9 @@
     }
     h1 {
       text-align: center;
-      font-size: 28px;
       margin-bottom: 20px;
+      font-size: 28px;
+      color: #333;
     }
     .calc-wrapper {
       display: flex;
@@ -32,37 +35,53 @@
     }
     .calculator {
       background-color: #fff;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding: 20px;
-      max-width: 450px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 30px;
       width: 100%;
+      max-width: 450px;
+      margin-bottom: 20px;
     }
     label {
       display: block;
-      margin-top: 10px;
+      margin-top: 15px;
       font-weight: 500;
+      color: #333;
     }
     select {
       width: 100%;
-      padding: 8px;
+      padding: 12px;
       margin-top: 5px;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 5px;
       font-size: 16px;
+      background-color: #fafafa;
+      color: #333;
+    }
+    .color-box {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      margin-left: 10px;
+      vertical-align: middle;
+      border: 1px solid #ccc;
+      border-radius: 3px;
     }
     button {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       background-color: #007BFF;
       color: #fff;
       border: none;
-      border-radius: 4px;
+      border-radius: 5px;
       font-size: 18px;
       cursor: pointer;
       margin-top: 20px;
+      transition: background-color 0.3s;
     }
-    button:hover { background-color: #0056b3; }
+    button:hover {
+      background-color: #0056b3;
+    }
     .result {
       margin-top: 20px;
       font-size: 20px;
@@ -70,37 +89,30 @@
       text-align: center;
       background-color: #f0f8ff;
       padding: 10px;
-      border-radius: 4px;
+      border-radius: 5px;
     }
-    .image-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    .image-table th,
-    .image-table td {
-      border: 1px solid #ccc;
-      padding: 10px;
+    .sketches {
+      flex: 1;
+      max-width: 500px;
+      margin-left: 20px;
       text-align: center;
     }
-    .image-table th {
-      background-color: #f9f9f9;
-      font-weight: 500;
-    }
-    .image-table img {
-      max-width: 100%;
-      height: auto;
-    }
-    .color-box {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      margin-left: 10px;
-      vertical-align: middle;
-      border: 1px solid #ccc;
+    .sketch img {
+      width: 300px;
+      height: 150px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      display: none;
     }
     @media (max-width: 800px) {
-      .calc-wrapper { flex-direction: column; align-items: center; }
+      .calc-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+      .sketches {
+        margin-left: 0;
+        margin-top: 20px;
+      }
     }
   </style>
 </head>
@@ -109,7 +121,8 @@
     <h1>Løftekalkulator - Fiberstropper</h1>
     <div class="calc-wrapper">
       <div class="calculator">
-        <label for="dimension">Velg Dimensjon:
+        <label for="dimension">
+          Velg dimensjon:
           <span id="dimensionColor" class="color-box"></span>
         </label>
         <select id="dimension">
@@ -122,77 +135,83 @@
           <option value="8" data-color="#1E90FF">8 tonn - Blå</option>
           <option value="10" data-color="#FFA500">10 tonn - Oransje</option>
         </select>
-
-        <label for="attachment">Velg Innfestingsmåte:</label>
+        
+        <label for="attachment">Velg innfestingsmåte:</label>
         <select id="attachment" onchange="updateAttachmentImage()">
           <option value="Rett">Rett</option>
           <option value="Snaret">Snaret</option>
-          <option value="U/Dobbel">U/Dobbel</option>
           <option value="U: 0°-45°">U: 0°-45°</option>
           <option value="U: 45°-60°">U: 45°-60°</option>
         </select>
-
-        <label for="parts">Velg antall stropper:</label>
-        <select id="parts" onchange="updateStrapImage()">
-          <option value="1">En stropp</option>
-          <option value="2">To stropper</option>
-          <option value="3">Tre eller fire stropper</option>
+        
+        <label for="parts">Velg antall parter:</label>
+        <select id="parts">
+          <option value="1">En Stropp</option>
+          <option value="2">To Stropper</option>
+          <option value="3-4">Tre- og Fire Stropper</option>
         </select>
-
-        <label for="angle">Velg Arbeidsvinkel:</label>
-        <select id="angle" onchange="updateStrapImage()">
+        
+        <label for="angle">Velg arbeidsvinkel:</label>
+        <select id="angle">
           <option value="1.0">0°</option>
-          <option value="0.8">1°–30°</option>
-          <option value="0.7">31°–45°</option>
-          <option value="0.5">46°–60°</option>
+          <option value="0.8">1°-30°</option>
+          <option value="0.7">31°-45°</option>
+          <option value="0.5">46°-60°</option>
         </select>
-
+        
         <button onclick="calculate()">Beregn</button>
+        
         <div class="result" id="result">
           Maks belastning: <span id="maxLoad">0</span> tonn
         </div>
       </div>
-
+      
       <div class="sketches">
-        <table class="image-table">
-          <tr>
-            <th>Innfestingsmåte</th>
-            <td>
-              <img id="attachmentSketch" src="rett.png" alt="Innfestingsmåte">
-            </td>
-          </tr>
-          <tr>
-            <th>Antall stropper</th>
-            <td>
-              <img id="strapSketch" src="rett.png" alt="Antall stropper">
-            </td>
-          </tr>
-        </table>
+        <h3>Innfestingsmåte</h3>
+        <img id="attachmentImage" src="" alt="Innfestingsbilde">
       </div>
     </div>
   </div>
-
+  
   <script>
+    function updateDimensionColor() {
+      const dimensionSelect = document.getElementById('dimension');
+      const colorBox = document.getElementById('dimensionColor');
+      const selectedOption = dimensionSelect.options[dimensionSelect.selectedIndex];
+      const color = selectedOption.getAttribute('data-color') || '#ccc';
+      colorBox.style.backgroundColor = color;
+    }
+    document.getElementById('dimension').addEventListener('change', updateDimensionColor);
+    updateDimensionColor();
+
+    const attachmentImages = {
+      "Rett": "rett.png",
+      "Snaret": "snaret.png",
+      "U: 0°-45°": "tostropper_0.png",
+      "U: 45°-60°": "tostropper_45.png"
+    };
+
     function updateAttachmentImage() {
-      const images = {
-        "Rett": "rett.png",
-        "Snaret": "snaret.png",
-        "U/Dobbel": "uform2.png",
-        "U: 0°-45°": "uformvinkel.png",
-        "U: 45°-60°": "uformvinkel.png"
-      };
-      document.getElementById('attachmentSketch').src = images[document.getElementById('attachment').value];
+      const selectedAttachment = document.getElementById("attachment").value;
+      const imageElement = document.getElementById("attachmentImage");
+
+      if (attachmentImages[selectedAttachment]) {
+        imageElement.src = attachmentImages[selectedAttachment];
+        imageElement.style.display = "block";
+      } else {
+        imageElement.style.display = "none";
+      }
     }
 
-    function updateStrapImage() {
-      const parts = document.getElementById('parts').value;
-      const angle = document.getElementById('angle').value;
-      const images = {
-        "2": { "1.0": "tostropper_0.png", "0.8": "tostropper_45.png", "0.7": "tostropper_452.png", "0.5": "tostropper_60.png" },
-        "3": { "1.0": "trestropper_0.png", "0.8": "trestropper_45.png", "0.7": "trestropper_452.png", "0.5": "trestropper_60.png" }
-      };
-      document.getElementById('strapSketch').src = images[parts][angle] || "rett.png";
+    function calculate() {
+      const dimension = parseFloat(document.getElementById('dimension').value);
+      const attachment = document.getElementById('attachment').value;
+
+      let baseLoad = dimension;
+      document.getElementById('maxLoad').innerText = baseLoad.toFixed(2);
     }
+
+    window.onload = updateAttachmentImage;
   </script>
 </body>
 </html>
