@@ -31,24 +31,29 @@
       flex-wrap: wrap;
       justify-content: space-between;
     }
+    .calculator {
+      flex: 1 1 45%;
+      margin-bottom: 20px;
+    }
+    .image-display {
+      flex: 1 1 45%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
     h1 {
-      width: 100%;
       text-align: center;
       margin-bottom: 20px;
       font-size: 24px;
       color: #333;
     }
-    .calculator, .image-display {
-      flex: 1 1 48%;
-      margin-bottom: 20px;
-    }
-    .calculator label {
+    label {
       display: block;
       margin-top: 15px;
       font-weight: 500;
       color: #333;
     }
-    .calculator select {
+    select {
       width: 100%;
       padding: 10px;
       margin-top: 5px;
@@ -67,7 +72,7 @@
       border: 1px solid #ccc;
       border-radius: 3px;
     }
-    .calculator button {
+    button {
       width: 100%;
       padding: 14px;
       background-color: #007BFF;
@@ -79,9 +84,7 @@
       margin-top: 20px;
       transition: background-color 0.3s;
     }
-    .calculator button:hover {
-      background-color: #0056b3;
-    }
+    button:hover { background-color: #0056b3; }
     .result {
       margin-top: 20px;
       font-size: 20px;
@@ -91,27 +94,11 @@
       padding: 10px;
       border-radius: 5px;
     }
-    .image-display {
-      /* Vi viser bildene i en tabell, som på Certex-siden */
-      width: 100%;
-    }
-    .image-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .image-table th,
-    .image-table td {
-      border: 1px solid #ccc;
-      padding: 10px;
-      text-align: center;
-    }
-    .image-table th {
-      background-color: #f9f9f9;
-      font-weight: 500;
-    }
-    .image-table img {
+    .image-display img {
       max-width: 100%;
       height: auto;
+      /* Ingen kant – hvis ønskelig, fjern border */
+      border: none;
       border-radius: 5px;
     }
     @media (max-width: 768px) {
@@ -126,6 +113,7 @@
     <!-- Kalkulatoren -->
     <div class="calculator">
       <h1>Løftekalkulator - Fiberstropper</h1>
+      
       <label for="dimension">
         Velg dimensjon:
         <span id="dimensionColor" class="color-box"></span>
@@ -140,114 +128,103 @@
         <option value="8" data-color="#1E90FF">8 tonn - Blå</option>
         <option value="10" data-color="#FFA500">10 tonn - Oransje</option>
       </select>
-
+      
       <label for="attachment">Velg innfestingsmåte:</label>
-      <select id="attachment" onchange="updateImages()">
+      <select id="attachment" onchange="updateImage()">
         <option value="Rett">Rett</option>
         <option value="Snaret">Snaret</option>
         <option value="U: 0°-45°">U: 0°-45°</option>
         <option value="U: 45°-60°">U: 45°-60°</option>
       </select>
-
+      
       <label for="parts">Velg antall stropper:</label>
-      <select id="parts" onchange="updateImages()">
+      <select id="parts" onchange="updateImage()">
         <option value="1">En stropp</option>
         <option value="2">To stropper</option>
-        <option value="3-4">Tre og fire stropper</option>
+        <option value="3">Tre og fire stropper</option>
       </select>
-
+      
       <label for="angle">Velg arbeidsvinkel:</label>
-      <select id="angle" onchange="updateImages()">
+      <select id="angle" onchange="updateImage()">
         <option value="1.0">0°</option>
         <option value="0.8">1°–30°</option>
         <option value="0.7">31°–45°</option>
         <option value="0.5">46°–60°</option>
       </select>
-
+      
       <button onclick="calculate()">Beregn</button>
-
+      
       <div class="result" id="result">
         Maks belastning: <span id="maxLoad">0</span> tonn
       </div>
     </div>
-
-    <!-- Bilder/Tabell som viser skissene (lik Certex-tabellen) -->
+    
+    <!-- Bildevisning -->
     <div class="image-display">
-      <table class="image-table">
-        <tr>
-          <th>Innfestingsmåte</th>
-          <td><img id="attachmentImage" src="rett.png" alt="Innfestingsmåte"></td>
-        </tr>
-        <tr>
-          <th>Antall stropper</th>
-          <td><img id="strapImage" src="rett.png" alt="Antall stropper"></td>
-        </tr>
-      </table>
+      <img id="configImage" src="rett.png" alt="Konfigurasjonsbilde">
     </div>
   </div>
-
+  
   <script>
-    // Oppdater dimensjonsfarge basert på valgt dimensjon
+    // Oppdater dimensjonsfarge
     function updateDimensionColor() {
-      const dimensionSelect = document.getElementById("dimension");
+      const dimSelect = document.getElementById("dimension");
       const colorBox = document.getElementById("dimensionColor");
-      const selectedOption = dimensionSelect.options[dimensionSelect.selectedIndex];
+      const selectedOption = dimSelect.options[dimSelect.selectedIndex];
       colorBox.style.backgroundColor = selectedOption.getAttribute("data-color");
     }
-
-    // Mapping for EN STROPP (innfestingsmåte)
-    const attachmentMapping = {
+    
+    // Mappings for bildene
+    // For EN STROPP
+    const oneStroppMapping = {
       "Rett": "rett.png",
       "Snaret": "snaret.png",
       "U: 0°-45°": "tostropper_0.png",
       "U: 45°-60°": "tostropper_452.png"
     };
-
-    // Mapping for TO STROPPer (basert på arbeidsvinkel)
-    const strapMappingTwo = {
+    // For TO STROPPer (basert på arbeidsvinkel)
+    const twoStropperMapping = {
       "1.0": "tostropper_0.png",
       "0.8": "tostropper_45.png",
       "0.7": "tostropper_452.png",
       "0.5": "tostropper_60.png"
     };
-
-    // Mapping for TRE OG FIRE STROPPer (basert på arbeidsvinkel)
-    const strapMappingThreeFour = {
+    // For TRE OG FIRE STROPPer (basert på arbeidsvinkel)
+    const threeStropperMapping = {
       "1.0": "trestropper_0.png",
       "0.8": "stroppertrestropper_45.png",
       "0.7": "trestropper_452.png",
       "0.5": "trestropper_60.png"
     };
-
-    // Oppdater bildene – både for innfestingsmåte og antall stropper – avhenger av antall stropper og valg
-    function updateImages() {
+    
+    // Oppdater bildet basert på brukerens valg
+    function updateImage() {
       const parts = document.getElementById("parts").value;
-      const angle = document.getElementById("angle").value;
       const attachment = document.getElementById("attachment").value;
+      const angle = document.getElementById("angle").value;
       let imgSrc = "";
+      
       if (parts === "1") {
-        // Ved én stropp bruker vi det vanlige innfestingsmåtebildet
-        imgSrc = attachmentMapping[attachment] || "rett.png";
+        // Én stropp: bruker bildet basert på innfestingsmåte
+        imgSrc = oneStroppMapping[attachment] || "rett.png";
       } else if (parts === "2") {
-        // Ved to stropper bruker vi strapMappingTwo basert på arbeidsvinkel
-        imgSrc = strapMappingTwo[angle] || "tostropper_0.png";
-      } else if (parts === "3-4") {
-        // Ved tre/fire stropper bruker vi strapMappingThreeFour
-        imgSrc = strapMappingThreeFour[angle] || "trestropper_0.png";
+        // To stropper: bruker mapping basert på arbeidsvinkel
+        imgSrc = twoStropperMapping[angle] || "tostropper_0.png";
+      } else if (parts === "3") {
+        // Tre og fire stropper: bruker mapping basert på arbeidsvinkel
+        imgSrc = threeStropperMapping[angle] || "trestropper_0.png";
       }
-      // Oppdater begge bildene (vi viser samme bilde i begge rader)
-      document.getElementById("attachmentImage").src = imgSrc;
-      document.getElementById("strapImage").src = imgSrc;
+      
+      document.getElementById("configImage").src = imgSrc;
     }
-
-    // Kalkuleringsfunksjon (du kan tilpasse beregningslogikken)
+    
+    // Kalkuleringsfunksjon (eksempel – du kan tilpasse logikken)
     function calculate() {
       const dimension = parseFloat(document.getElementById("dimension").value);
-      const attachment = document.getElementById("attachment").value;
-      const parts = document.getElementById("parts").value;
       const angleFactor = parseFloat(document.getElementById("angle").value);
       let baseLoad = dimension;
-      // Juster baselasten basert på innfestingsmåte
+      // Enkel justering for innfestingsmåte (tilpass etter behov)
+      const attachment = document.getElementById("attachment").value;
       if (attachment === "Snaret") {
         baseLoad *= 0.8;
       } else if (attachment === "U: 0°-45°") {
@@ -255,27 +232,27 @@
       } else if (attachment === "U: 45°-60°") {
         baseLoad *= 1.4;
       }
-      // Juster for antall stropper
+      const parts = document.getElementById("parts").value;
       if (parts === "2") {
         baseLoad *= 2.1;
-      } else if (parts === "3-4") {
+      } else if (parts === "3") {
         baseLoad *= 3.0;
       }
       const maxLoad = baseLoad * angleFactor;
       document.getElementById("maxLoad").innerText = maxLoad.toFixed(2);
-      updateImages();
+      updateImage();
     }
-
-    // Legg til event-lyttere
+    
+    // Event-lyttere for oppdatering
     document.getElementById("dimension").addEventListener("change", updateDimensionColor);
-    document.getElementById("attachment").addEventListener("change", updateImages);
-    document.getElementById("parts").addEventListener("change", updateImages);
-    document.getElementById("angle").addEventListener("change", updateImages);
-
-    // Initial oppdatering når siden lastes
+    document.getElementById("attachment").addEventListener("change", updateImage);
+    document.getElementById("parts").addEventListener("change", updateImage);
+    document.getElementById("angle").addEventListener("change", updateImage);
+    
+    // Initial oppdatering ved lasting
     window.onload = function() {
       updateDimensionColor();
-      updateImages();
+      updateImage();
     };
   </script>
 </body>
