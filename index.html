@@ -145,7 +145,7 @@
         </select>
         
         <label for="parts">Velg antall parter:</label>
-        <select id="parts">
+        <select id="parts" onchange="updateStrapImage()">
           <option value="1">En Stropp</option>
           <option value="2">To Stropper</option>
           <option value="3-4">Tre- og Fire Stropper</option>
@@ -159,59 +159,15 @@
           <option value="0.5">46°-60°</option>
         </select>
         
+        <label for="symmetry">Symmetrisk/Usymmetrisk:</label>
+        <select id="symmetry">
+          <option value="1.0">Symmetrisk</option>
+          <option value="0.7">Usymmetrisk</option>
+        </select>
+        
         <button onclick="calculate()">Beregn</button>
         
         <div class="result" id="result">
-          Maks belastning: <span id="maxLoad">0</span> tonn
-        </div>
-      </div>
-      
-      <div class="sketches">
-        <h3>Innfestingsmåte</h3>
-        <img id="attachmentImage" src="" alt="Innfestingsbilde">
-      </div>
-    </div>
-  </div>
-  
-  <script>
-    function updateDimensionColor() {
-      const dimensionSelect = document.getElementById('dimension');
-      const colorBox = document.getElementById('dimensionColor');
-      const selectedOption = dimensionSelect.options[dimensionSelect.selectedIndex];
-      const color = selectedOption.getAttribute('data-color') || '#ccc';
-      colorBox.style.backgroundColor = color;
-    }
-    document.getElementById('dimension').addEventListener('change', updateDimensionColor);
-    updateDimensionColor();
-
-    const attachmentImages = {
-      "Rett": "rett.png",
-      "Snaret": "snaret.png",
-      "U: 0°-45°": "tostropper_0.png",
-      "U: 45°-60°": "tostropper_45.png"
-    };
-
-    function updateAttachmentImage() {
-      const selectedAttachment = document.getElementById("attachment").value;
-      const imageElement = document.getElementById("attachmentImage");
-
-      if (attachmentImages[selectedAttachment]) {
-        imageElement.src = attachmentImages[selectedAttachment];
-        imageElement.style.display = "block";
-      } else {
-        imageElement.style.display = "none";
-      }
-    }
-
-    function calculate() {
-      const dimension = parseFloat(document.getElementById('dimension').value);
-      const attachment = document.getElementById('attachment').value;
-
-      let baseLoad = dimension;
-      document.getElementById('maxLoad').innerText = baseLoad.toFixed(2);
-    }
-
-    window.onload = updateAttachmentImage;
-  </script>
-</body>
-</html>
+          Maks belastning: <span id="maxLoad">0</
+::contentReference[oaicite:1]{index=1}
+ 
