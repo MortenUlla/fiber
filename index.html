@@ -84,7 +84,9 @@
       margin-top: 20px;
       transition: background-color 0.3s;
     }
-    button:hover { background-color: #0056b3; }
+    button:hover {
+      background-color: #0056b3;
+    }
     .result {
       margin-top: 20px;
       font-size: 20px;
@@ -97,7 +99,7 @@
     .image-display img {
       max-width: 100%;
       height: auto;
-      /* Ingen kant – hvis ønskelig, fjern border */
+      /* Ingen kant – kun bildet skal vises */
       border: none;
       border-radius: 5px;
     }
@@ -110,7 +112,7 @@
 </head>
 <body>
   <div class="container">
-    <!-- Kalkulatoren -->
+    <!-- Kalkulator -->
     <div class="calculator">
       <h1>Løftekalkulator - Fiberstropper</h1>
       
@@ -144,8 +146,9 @@
         <option value="3">Tre og fire stropper</option>
       </select>
       
+      <!-- Arbeidsvinkel brukes for beregning, men påvirker IKKE bildevisningen -->
       <label for="angle">Velg arbeidsvinkel:</label>
-      <select id="angle" onchange="updateImage()">
+      <select id="angle" onchange="/* Ingen bildeoppdatering her */">
         <option value="1.0">0°</option>
         <option value="0.8">1°–30°</option>
         <option value="0.7">31°–45°</option>
@@ -166,7 +169,7 @@
   </div>
   
   <script>
-    // Oppdater dimensjonsfarge
+    // Oppdater fargeindikator for dimensjon
     function updateDimensionColor() {
       const dimSelect = document.getElementById("dimension");
       const colorBox = document.getElementById("dimensionColor");
@@ -174,56 +177,46 @@
       colorBox.style.backgroundColor = selectedOption.getAttribute("data-color");
     }
     
-    // Mappings for bildene
-    // For EN STROPP
+    // Mappings for bildene (bildene skal være uavhengige av arbeidsvinkel)
+    // For EN STROPP – basert på innfestingsmåte
     const oneStroppMapping = {
       "Rett": "rett.png",
       "Snaret": "snaret.png",
       "U: 0°-45°": "tostropper_0.png",
       "U: 45°-60°": "tostropper_452.png"
     };
-    // For TO STROPPer (basert på arbeidsvinkel)
-    const twoStropperMapping = {
-      "1.0": "tostropper_0.png",
-      "0.8": "tostropper_45.png",
-      "0.7": "tostropper_452.png",
-      "0.5": "tostropper_60.png"
-    };
-    // For TRE OG FIRE STROPPer (basert på arbeidsvinkel)
-    const threeStropperMapping = {
-      "1.0": "trestropper_0.png",
-      "0.8": "stroppertrestropper_45.png",
-      "0.7": "trestropper_452.png",
-      "0.5": "trestropper_60.png"
-    };
     
-    // Oppdater bildet basert på brukerens valg
+    // For TO STROPPer – fast valgt til 0°-bildet (uavhengig av arbeidsvinkel)
+    const twoStropperMapping = "tostropper_0.png";
+    
+    // For TRE OG FIRE STROPPer – fast valgt til 0°-bildet (uavhengig av arbeidsvinkel)
+    const threeStropperMapping = "trestropper_0.png";
+    
+    // Oppdater bildet (configImage) basert på valgene for innfestingsmåte og antall stropper
     function updateImage() {
       const parts = document.getElementById("parts").value;
       const attachment = document.getElementById("attachment").value;
-      const angle = document.getElementById("angle").value;
       let imgSrc = "";
       
       if (parts === "1") {
-        // Én stropp: bruker bildet basert på innfestingsmåte
+        // Én stropp: bruk bildet fra innfestingsmåte-mappingen
         imgSrc = oneStroppMapping[attachment] || "rett.png";
       } else if (parts === "2") {
-        // To stropper: bruker mapping basert på arbeidsvinkel
-        imgSrc = twoStropperMapping[angle] || "tostropper_0.png";
+        // To stropper: vis fast bildet for to stropper (0°-varianten)
+        imgSrc = twoStropperMapping;
       } else if (parts === "3") {
-        // Tre og fire stropper: bruker mapping basert på arbeidsvinkel
-        imgSrc = threeStropperMapping[angle] || "trestropper_0.png";
+        // Tre og fire stropper: vis fast bildet for tre stropper (0°-varianten)
+        imgSrc = threeStropperMapping;
       }
       
       document.getElementById("configImage").src = imgSrc;
     }
     
-    // Kalkuleringsfunksjon (eksempel – du kan tilpasse logikken)
+    // Kalkuleringsfunksjon (arbeidsvinkelen benyttes i beregningen, men påvirker ikke bildevisningen)
     function calculate() {
       const dimension = parseFloat(document.getElementById("dimension").value);
       const angleFactor = parseFloat(document.getElementById("angle").value);
       let baseLoad = dimension;
-      // Enkel justering for innfestingsmåte (tilpass etter behov)
       const attachment = document.getElementById("attachment").value;
       if (attachment === "Snaret") {
         baseLoad *= 0.8;
@@ -240,14 +233,16 @@
       }
       const maxLoad = baseLoad * angleFactor;
       document.getElementById("maxLoad").innerText = maxLoad.toFixed(2);
+      
+      // Oppdater bilde (bilder for arbeidsvinkel forblir uendret)
       updateImage();
     }
     
-    // Event-lyttere for oppdatering
+    // Legg til event-lyttere
     document.getElementById("dimension").addEventListener("change", updateDimensionColor);
     document.getElementById("attachment").addEventListener("change", updateImage);
     document.getElementById("parts").addEventListener("change", updateImage);
-    document.getElementById("angle").addEventListener("change", updateImage);
+    // Merk: Arbeidsvinkelen endrer vi IKKE bildet, så ingen event-lytter for "angle" er nødvendig for bildeoppdatering.
     
     // Initial oppdatering ved lasting
     window.onload = function() {
